@@ -1,4 +1,4 @@
-# GSync
+# FastRSync
 GSync syncs backups to an rclone remote directory, and automatically deletes old backups
 
 ## Installation
