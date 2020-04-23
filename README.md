@@ -1,9 +1,9 @@
-# GSync
-GSync syncs backups to an rclone remote directory, and automatically deletes old backups
+# GSync.py
+GSync provides revision control for rclone remote's without it (Most notably Google Drive, lacking folder revision control)
 
 ## Installation
 ```bash
-chmod 755 ./backupclean.py ./backupbuffer.sh
+chmod 755 ./GSync.py
 ```
 Then put appropriate running times in your crontab file for both the backup script and the cleaning script.
 
