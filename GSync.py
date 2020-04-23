@@ -7,8 +7,8 @@ ps.add_argument("path", type=str, help='Path to folder to be uploaded/sync\'d to
 ps.add_argument("remote", type=str, help='RClone remote folder (Remote: or Remote:Folder)')
 ps.add_argument("-c", "--clean", action="store_true", help="Clean old files (see -c, -e)")
 ps.add_argument("-f", "--flags", type=str, help="Extra rclone flags to be passed (see rclone docs)")
-ps.add_argument("-e", "--expire", type=int, help="Expiry date - if older than <num> days, delete")
-ps.add_argument("-k", "--keep", type=int, help="If less than <num> backups of directory are found, don't delete any")
+ps.add_argument("-e", "--expire", type=int, help="Expiry date - if older than <num> days, delete (defaults to 5)")
+ps.add_argument("-k", "--keep", type=int, help="If less than <num> backups of directory are found, don't delete any (defaults to 3)")
 
 args=ps.parse_args()
 remote=args.remote.split(':')[1]
@@ -26,7 +26,6 @@ if args.flags:
 else:
 	eargs=''
 if args.clean:
-	print(args.remote)
 	days=5 #older than days, delete
 	ddel=3 #if less than ddel backups are found of directory, don't delete any
 	if args.expire:
@@ -43,7 +42,7 @@ if args.clean:
 	today = str(today.strftime(dformat))
 	dirs=[]
 	delbuf=[]
-	for line in tree.split("\n")[:-2]:
+	for line in tree.split("\n"):
 		dirs.append(line)
 	for line in dirs:
 		dateline=line.split(".")
