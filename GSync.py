@@ -6,6 +6,7 @@ ps = argparse.ArgumentParser(description='Sync\'s <path> with <remote>')
 ps.add_argument("path", type=str, help='Path to folder to be uploaded/sync\'d to remote')
 ps.add_argument("remote", type=str, help='RClone remote folder (Remote: or Remote:Folder)')
 ps.add_argument("-c", "--clean", action="store_true", help="Clean old files (see -e, -k)")
+ps.add_argument("-m", "--mirror", action="store_true", help="Instead of only backing up files that were to be overridden by newer ones, mirror the entire folder when backing up")
 ps.add_argument("-f", "--flags", type=str, help="Extra rclone flags to be passed (see rclone docs)")
 ps.add_argument("-e", "--expire", type=int, help="Expiry date - if older than <num> days, delete (defaults to 5)")
 ps.add_argument("-k", "--keep", type=int, help="If less than <num> backups of directory are found, don't delete any (defaults to 3)")
@@ -57,4 +58,7 @@ if args.clean:
 		os.system("rclone delete GDrive:"+dir+"/"+' '+eargs)
 		os.system("rclone rmdirs GDrive:"+dir+"/"+' '+eargs)
 else:
-	os.system("rclone sync "+args.path.rstrip('/')+' '+args.remote+" -v --backup-dir "+args.remote+'-'+datetime.now().strftime('%Y-%m-%d/%R')+' '+eargs)
+	if args.mirror:
+		os.system("rclone copy "+args.remote+" "+args.remote+'-'+datetime.now().strftime('%Y-%m-%d/%R')+' '+eargs)
+	else:
+		os.system("rclone sync "+args.path.rstrip('/')+' '+args.remote+" -v --backup-dir "+args.remote+'-'+datetime.now().strftime('%Y-%m-%d/%R')+' '+eargs)
