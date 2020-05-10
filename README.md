@@ -10,7 +10,7 @@ See
 ```bash
 ./GSync.py --help
 ```
-for more info
+for more info.
 
 ## Caveats
 Backup directory's timestamp is the time when it was *copied*, not when the backup was actually created.
