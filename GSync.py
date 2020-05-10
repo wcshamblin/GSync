@@ -22,6 +22,7 @@ else:
 		args.remote=args.remote+dirs[-1]
 	else:
 		args.remote=args.remote+dirs[-1]+'/'+dirs[-1]
+args.remote=args.remote.rstrip('/')
 if args.flags:
 	eargs=args.flags
 else:
@@ -38,7 +39,7 @@ if args.clean:
 		d1 = datetime.strptime(d1, dateformat)
 		return abs((d1-d0).days)
 	tree=os.popen("rclone lsd "+str(args.remote)+" --max-depth 1 | awk '{print $5}'").read().strip()
-	dformat = '%d-%m-%y'
+	dformat = '%Y-%m-%d'
 	today=date.today()
 	today = str(today.strftime(dformat))
 	dirs=[]
@@ -46,17 +47,16 @@ if args.clean:
 	for line in tree.split("\n"):
 		dirs.append(line)
 	for line in dirs:
-		dateline=line.split(".")
+		dateline=line.split("-")
 		if len(dateline)>1 and sum(dir.startswith(dateline[0]) for dir in dirs)>ddel:
-		    if datedif(today, dateline[1], dformat)>days:
+		    if datedif(today, '-'.join(dateline[-3:]), dformat)>days:
 		        delbuf.append(line)
-
 	print("All directories:", dirs)
 
 	print("To be deleted:", delbuf)
-	for dir in delbuf:
-		os.system("rclone delete GDrive:"+dir+"/"+' '+eargs)
-		os.system("rclone rmdirs GDrive:"+dir+"/"+' '+eargs)
+	for dire in delbuf:
+		os.system("rclone delete "+args.remote+"/"+dire+"/"+' '+eargs)
+		os.system("rclone rmdirs "+args.remote+"/"+dire+"/"+' '+eargs)
 else:
 	if args.mirror:
 		os.system("rclone copy "+args.remote+" "+args.remote+'-'+datetime.now().strftime('%Y-%m-%d/%R')+' '+eargs)
